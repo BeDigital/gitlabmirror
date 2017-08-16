@@ -1,0 +1,44 @@
+stages:
+
+  - deploy
+
+deploy_phase1:
+  stage: deploy
+
+  tags:
+  - DEV
+
+  script:
+  - sudo chown -R gitlab_ci_multi_runner:gitlab_ci_multi_runner *
+
+  - sudo rsync -av --exclude '.*'  /www/brianUckert-gitlabmirror-p1/www
+  - sudo chown netsuite:rhdev -R /www/brianUckert-gitlabmirror-p1/www
+  - sudo find /www/brianUckert-gitlabmirror-p1/www -type f -exec chmod g+w {} \;
+  - sudo find /www/brianUckert-gitlabmirror-p1/www -type d -exec chmod g+ws {} \;
+
+  environment:
+    name: development
+
+  only:
+  - master
+
+
+deploy_phase2:
+  stage: deploy
+
+  tags:
+  - DEV
+
+  script:
+  - sudo chown -R gitlab_ci_multi_runner:gitlab_ci_multi_runner *
+
+  - sudo rsync -av --exclude '.*'  /www/brianUckert-gitlabmirror-p2/www
+  - sudo chown netsuite:rhdev -R /www/brianUckert-gitlabmirror-p2/www
+  - sudo find /www/brianUckert-gitlabmirror-p2/www -type f -exec chmod g+w {} \;
+  - sudo find /www/brianUckert-gitlabmirror-p2/www -type d -exec chmod g+ws {} \;
+
+  environment:
+    name: dev-phase2
+
+  only:
+  - phase2
